@@ -1,0 +1,96 @@
+# Builds a signed release APK and attaches it to a GitHub Release.
+# It starts when a tag like v1.0.0 is created (for example by publishing a release on github.com).
+name: Release APK
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Android SDK
+        run: |
+          SDKM="$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager"
+          yes | "$SDKM" --licenses > /dev/null || true
+          yes | "$SDKM" "platforms;android-34" "build-tools;34.0.0" > /dev/null
+
+      - name: Install
+        run: npm install
+
+      - name: Create the Android project
+        run: npx cap add android
+
+      - name: App icon
+        continue-on-error: true
+        run: |
+          node -e "require('sharp')({create:{width:1024,height:1024,channels:3,background:'#15333a'}}).png().toFile('assets/icon-background.png')"
+          npx capacitor-assets generate --android
+
+      - name: Safety check for the icon
+        run: |
+          RES=android/app/src/main/res
+          if grep -q ic_launcher_background $RES/mipmap-anydpi-v26/ic_launcher.xml 2>/dev/null && ! ls $RES/mipmap-*/ic_launcher_background* >/dev/null 2>&1; then
+            echo "Icon background missing, using the simple icon instead"
+            rm -rf $RES/mipmap-anydpi-v26
+          fi
+
+      - name: Copy the app into Android
+        run: npx cap sync android
+
+      - name: Set the version from the tag (v1.2.3 -> 1.2.3)
+        run: |
+          VER="${GITHUB_REF_NAME#v}"
+          IFS=. read -r A B C <<< "$VER"
+          CODE=$(( ${A:-0} * 10000 + ${B:-0} * 100 + ${C:-0} ))
+          sed -i "s/versionCode [0-9]*/versionCode $CODE/; s/versionName \"[^\"]*\"/versionName \"$VER\"/" android/app/build.gradle
+          grep -n "versionCode\|versionName" android/app/build.gradle
+          echo "VER=$VER" >> "$GITHUB_ENV"
+
+      - name: Build the release APK
+        working-directory: android
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease
+
+      - name: Sign the APK with your key
+        env:
+          KS_B64: ${{ secrets.KEYSTORE_BASE64 }}
+          KS_PASS: ${{ secrets.KEYSTORE_PASSWORD }}
+          KS_ALIAS: ${{ secrets.KEY_ALIAS }}
+        run: |
+          if [ -z "$KS_B64" ] || [ -z "$KS_PASS" ] || [ -z "$KS_ALIAS" ]; then
+            echo "The three signing secrets are missing. See STEPS.txt, step 3."
+            exit 1
+          fi
+          echo "$KS_B64" | base64 -d > release.jks
+          BT="$ANDROID_HOME/build-tools/34.0.0"
+          "$BT/zipalign" -p 4 android/app/build/outputs/apk/release/app-release-unsigned.apk aligned.apk
+          "$BT/apksigner" sign --ks release.jks --ks-key-alias "$KS_ALIAS" --ks-pass env:KS_PASS --key-pass env:KS_PASS --out "Notes-$VER.apk" aligned.apk
+          "$BT/apksigner" verify --print-certs "Notes-$VER.apk"
+          rm -f release.jks
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            gh release upload "$GITHUB_REF_NAME" "Notes-$VER.apk" --clobber
+          else
+            gh release create "$GITHUB_REF_NAME" "Notes-$VER.apk" --title "Notes $VER" --notes "Notes $VER"
+          fi

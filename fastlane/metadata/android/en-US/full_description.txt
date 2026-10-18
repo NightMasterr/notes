@@ -1,0 +1,14 @@
+A fast, simple note taker that keeps everything on your phone. No account, no ads, no analytics, no tracking.
+
+Features:
+- The list shows only note names, so it stays tidy
+- Select words and tap "Use as name" to choose a note's list name
+- 12 soft colors
+- Pin notes to a block at the top; edited notes move up
+- Archive and Recycle with a one-tap Undo
+- Lock a note so it cannot be changed or deleted by accident
+- Search through all your notes
+- Works fully offline
+- Export and import backups as a simple .json file
+
+Your notes are stored only on your device. Export a backup now and then.

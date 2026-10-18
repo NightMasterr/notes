@@ -1,0 +1,46 @@
+PUBLISH NOTES ON IZZYONDROID (shows up in F-Droid and Droid-ify)
+================================================================
+
+0. BEFORE ANYTHING: on your phone open Notes -> three dots -> Export backup. Keep that file.
+   (The release app is signed with a different key than the test app, so the old test app
+    must be uninstalled first. Uninstalling deletes its notes. Import the backup afterwards.)
+
+1. Copy these folders into your repository folder on your PC, merge/replace when asked:
+      .github      (adds two files in .github/workflows)
+      fastlane     (the store description and icon)
+   Open GitHub Desktop, write "Add release files", Commit, then Push origin.
+   Keep the repository PRIVATE until step 4.
+
+2. Make your signing key (once):
+   - github.com -> your repository -> Actions -> "Create signing key" (left list) -> Run workflow.
+   - When it is green, open the run, scroll to Artifacts, download "signing-secrets", unzip,
+     open signing-secrets.txt. It has three blocks: KEYSTORE_PASSWORD, KEY_ALIAS, KEYSTORE_BASE64.
+   - SAVE signing-secrets.txt somewhere safe (USB stick, password manager). If you lose it you can
+     never update the app under the same signature. Never share it or post it anywhere.
+
+3. Save the three values as secrets:
+   - Repository -> Settings -> Secrets and variables -> Actions -> "New repository secret".
+   - Make three secrets. Name = the heading, Value = the line under it:
+        KEYSTORE_PASSWORD
+        KEY_ALIAS
+        KEYSTORE_BASE64   (the one very long line)
+   - Then go back to Actions -> the "Create signing key" run -> delete the run or the artifact.
+
+4. Make the release:
+   - Repository -> Releases -> "Draft a new release".
+   - Click "Choose a tag", type v1.0.0, click "Create new tag: v1.0.0 on publish".
+   - Title: Notes 1.0.0. Click "Publish release".
+   - Open the Actions tab: "Release APK" runs (about 5-8 minutes). When green, the release
+     page shows Notes-1.0.0.apk. That is your signed app.
+
+5. Install it: uninstall the old test app, install Notes-1.0.0.apk, import your backup.
+
+6. Make the repository public: Settings -> scroll to the bottom -> Danger Zone ->
+   "Change visibility" -> Public. Check the LICENSE file is there first.
+
+7. Ask IzzyOnDroid to include it: open the maintenance repository linked on
+   https://izzyondroid.org/docs/general/AppInclusionPolicy/ , create a new issue with the
+   "inclusion request" template and give your repository link.
+
+8. When accepted, add the repo in Droid-ify / F-Droid:
+   Settings -> Repositories -> add  https://apt.izzysoft.de/fdroid/repo
