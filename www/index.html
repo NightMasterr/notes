@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#e9eeec">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Notes</title>
+  <style>
+@font-face { font-family: "Newsreader"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/newsreader-latin-ext-400.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Newsreader"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/newsreader-latin-400.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Newsreader"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/newsreader-latin-ext-500.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Newsreader"; font-style: normal; font-weight: 500; font-display: swap; src: url("fonts/newsreader-latin-500.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/bricolage-latin-ext-400.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/bricolage-latin-400.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/bricolage-latin-ext-600.woff2") format("woff2"); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 600; font-display: swap; src: url("fonts/bricolage-latin-600.woff2") format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+:root { --bg: #e9eeec; --panel: #f7f9f8; --ink: #15333a; --muted: #6b8187; --line: #d3dcda; }
+[data-color="sage"] { --c: #cfe3d6; } [data-color="sky"] { --c: #cddfee; } [data-color="lilac"] { --c: #ddd5ee; }
+[data-color="sun"] { --c: #f6e2a8; } [data-color="rose"] { --c: #f2d3d3; } [data-color="peach"] { --c: #f8d9bf; }
+[data-color="coral"] { --c: #f5c2b8; } [data-color="lime"] { --c: #dfe9b5; } [data-color="mint"] { --c: #c3eadb; }
+[data-color="aqua"] { --c: #bfe4ea; } [data-color="periwinkle"] { --c: #cfd3f2; } [data-color="stone"] { --c: #ddd9d3; }
+
+* { box-sizing: border-box; margin: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: var(--bg); overscroll-behavior-y: none; }
+body { font-family: "Bricolage Grotesque", system-ui, sans-serif; color: var(--ink); }
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 0; background: none; }
+.hidden { display: none !important; }
+
+#app { position: relative; max-width: 760px; margin: 0 auto; height: 100vh; height: 100dvh; }
+.view { position: absolute; inset: 0; display: flex; flex-direction: column; background: var(--bg); transition: background .2s; }
+#listView.v-archive { background: #fbf3df; }
+#listView.v-bin { background: #fbe9e7; }
+
+.top { display: flex; align-items: center; gap: 8px; padding: calc(12px + env(safe-area-inset-top)) 14px 8px 18px; min-height: 64px; }
+.top h1 { flex: 1; font-family: "Newsreader", Georgia, serif; font-size: 2rem; font-weight: 500; letter-spacing: -.02em; }
+.iconbtn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; font-size: 1.4rem; }
+.iconbtn:active { background: rgba(21, 51, 58, .1); }
+
+.searchwrap { padding: 0 14px 8px; }
+.searchwrap input { width: 100%; border: 1px solid var(--line); background: #fff; border-radius: 14px; padding: 12px 14px; }
+
+.banner { display: flex; align-items: center; justify-content: space-between; margin: 0 14px 8px; padding: 8px 14px; border-radius: 12px; font-weight: 600; }
+.v-archive .banner { background: #f3d98a; } .v-bin .banner { background: #f2b8b0; }
+.banner button { background: rgba(255,255,255,.65); border-radius: 999px; padding: 6px 14px; font-size: .85rem; }
+
+.list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 2px 14px 96px; -webkit-overflow-scrolling: touch; }
+.card { position: relative; text-align: left; width: 100%; border-radius: 16px; padding: 14px 16px; background: var(--c, #cfe3d6);
+  touch-action: pan-y; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.card:active { filter: brightness(.96); }
+.card.after-pins { margin-top: 10px; }
+.card.after-pins::before { content: ""; position: absolute; left: 6px; right: 6px; top: -9px; border-top: 1px solid var(--line); }
+.card .row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+.card h3 { font-size: 1.05rem; font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.card .lock { opacity: .7; display: flex; margin-top: 2px; }
+.card time { display: block; font-size: .78rem; color: var(--muted); margin-top: 6px; }
+.empty { color: var(--muted); text-align: center; padding: 48px 24px; line-height: 1.6; }
+
+.fab { position: absolute; right: 16px; bottom: calc(80px + env(safe-area-inset-bottom)); background: var(--ink); color: #fff; border-radius: 999px; padding: 14px 22px; font-weight: 600; box-shadow: 0 6px 20px rgba(21,51,58,.3); }
+.tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: var(--panel); border-top: 1px solid var(--line); }
+.tabs button { padding: 12px 4px; border-radius: 12px; font-weight: 600; background: #fff; border: 1px solid var(--line); }
+.tabs button.on { background: var(--ink); color: #fff; border-color: var(--ink); }
+.tabs button.on[data-view="archive"] { background: #d99a1c; border-color: #d99a1c; }
+.tabs button.on[data-view="bin"] { background: #c8493f; border-color: #c8493f; }
+
+/* editor */
+#editView { background: var(--panel); }
+#editView .top { background: var(--panel); padding-left: 8px; min-height: 60px; }
+.status { flex: 1; font-size: .85rem; color: var(--muted); }
+.chip { background: var(--ink); color: #fff; border-radius: 999px; padding: 9px 14px; font-size: .85rem; font-weight: 600; }
+.colors { display: flex; gap: 12px; overflow-x: auto; padding: 4px 18px 12px; border-bottom: 1px solid var(--line); scrollbar-width: none; }
+.swatch { flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--c); border: 3px solid transparent; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.swatch.on { border-color: var(--ink); }
+.swatch:disabled { opacity: .4; }
+.page { flex: 1; overflow-y: auto; display: flex; flex-direction: column; -webkit-overflow-scrolling: touch; }
+.title { flex: none; width: 100%; border: 0; background: transparent; padding: 18px 18px 6px; font-family: "Newsreader", Georgia, serif; font-size: 2rem; font-weight: 500; letter-spacing: -.02em; line-height: 1.15; }
+.body { flex: 1 0 auto; width: 100%; min-height: 50vh; display: block; border: 0; background: transparent; resize: none; overflow: hidden; padding: 6px 18px 80px; font-family: "Newsreader", Georgia, serif; font-size: 1.15rem; line-height: 1.65; }
+.title::placeholder, .body::placeholder { color: #a2b3b5; }
+.title:focus, .body:focus { outline: none; }
+
+/* bottom sheet + toast */
+.sheet { position: fixed; inset: 0; z-index: 20; display: flex; align-items: flex-end; justify-content: center; }
+.backdrop { position: absolute; inset: 0; background: rgba(21,51,58,.4); }
+.panel { position: relative; width: 100%; max-width: 760px; background: #fff; border-radius: 22px 22px 0 0; padding: 8px 10px calc(14px + env(safe-area-inset-bottom)); }
+.panel .sheet-title { padding: 12px 14px 8px; font-weight: 600; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.panel button { display: block; width: 100%; text-align: left; padding: 15px 14px; border-radius: 12px; font-size: 1.05rem; }
+.panel button:active:not(:disabled) { background: #eef3f1; }
+.panel button.danger { color: #b3362d; }
+.panel button:disabled { opacity: .4; }
+.toast { position: fixed; left: 50%; bottom: calc(92px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 30; background: var(--ink); color: #fff;
+  padding: 11px 18px; border-radius: 999px; font-size: .92rem; display: flex; gap: 14px; align-items: center; opacity: 0; pointer-events: none; transition: opacity .2s; max-width: 92vw; }
+.toast.show { opacity: 1; pointer-events: auto; }
+.toast button { color: #9fd3e0; font-weight: 700; }
+  </style>
+</head>
+<body>
+<div id="app">
+  <section class="view" id="listView">
+    <header class="top">
+      <h1>Notes</h1>
+      <button class="iconbtn" id="moreBtn" aria-label="Menu">&#8942;</button>
+    </header>
+    <div class="searchwrap"><input id="search" type="search" placeholder="Search notes" aria-label="Search notes"></div>
+    <div class="banner hidden" id="banner"><span id="bannerText"></span><button id="emptyBin" class="hidden">Empty recycle</button></div>
+    <div class="list" id="list"></div>
+    <button class="fab" id="fab">+ New note</button>
+    <nav class="tabs">
+      <button data-view="notes" class="on">Notes</button>
+      <button data-view="archive">Archive</button>
+      <button data-view="bin">Recycle</button>
+    </nav>
+  </section>
+
+  <section class="view hidden" id="editView">
+    <header class="top">
+      <button class="iconbtn" id="backBtn" aria-label="Back">&#8592;</button>
+      <span class="status" id="status"></span>
+      <button class="chip hidden" id="nameBtn">Use as name</button>
+      <button class="iconbtn" id="dotsBtn" aria-label="Note options">&#8942;</button>
+    </header>
+    <div class="colors" id="colors"></div>
+    <div class="page" id="page">
+      <input class="title" id="title" placeholder="Untitled" aria-label="Note heading">
+      <textarea class="body" id="body" placeholder="Start writing..." aria-label="Note body"></textarea>
+    </div>
+  </section>
+</div>
+
+<div class="sheet hidden" id="sheet"><div class="backdrop" id="backdrop"></div><div class="panel" id="panel"></div></div>
+<div class="toast" id="toast"></div>
+<input type="file" id="importFile" accept=".json,application/json" hidden>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const COLORS = ["sage", "sky", "lilac", "sun", "rose", "peach", "coral", "lime", "mint", "aqua", "periwinkle", "stone"];
+const LOCK_SVG = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const KEY = "notes.phone.v1";
+
+let notes = [], view = "notes", currentId = null, editing = false, freshId = null;
+let saveTimer = null, toastTimer = null, sel = null, installEvt = null;
+const titleEl = $("title"), bodyEl = $("body");
+
+const now = () => Date.now() / 1000;
+const uid = () => (crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "") : Math.random().toString(16).slice(2) + Date.now().toString(16));
+const cur = () => notes.find((n) => n.id === currentId);
+const nameOf = (n) => n.label || n.title || "Untitled";
+const fmtDate = (ts) => new Date(ts * 1000).toLocaleDateString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
+
+/* ---------- storage ---------- */
+function norm(n) {
+  return {
+    id: String(n.id || uid()), title: String(n.title || ""), label: String(n.label || ""), body: String(n.body || ""),
+    color: COLORS.includes(n.color) ? n.color : "sage",
+    pinned: !!n.pinned, archived: !!n.archived, deleted: !!n.deleted, locked: !!n.locked,
+    sort: Number(n.sort) || Number(n.updated) || 0, pin_order: Number(n.pin_order) || 0, updated: Number(n.updated) || now(),
+  };
+}
+
+function load() {
+  try {
+    const a = JSON.parse(localStorage.getItem(KEY) || "[]");
+    return Array.isArray(a) ? a.map(norm) : [];
+  } catch (e) { return []; }
+}
+
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify(notes)); return true; }
+  catch (e) { toast("Could not save. Export a backup now!"); return false; }
+}
+
+function save(immediately = false) {
+  clearTimeout(saveTimer);
+  const run = () => { if (persist() && editing) $("status").textContent = statusText(cur()); };
+  if (immediately) run(); else saveTimer = setTimeout(run, 500);
+}
+
+function statusText(n) { return !n ? "" : n.deleted ? "In Recycle" : n.locked ? "Locked" : "Saved"; }
+
+function toast(msg, undo) {
+  const t = $("toast");
+  t.textContent = msg;
+  if (undo) {
+    const b = document.createElement("button");
+    b.textContent = "Undo";
+    b.onclick = () => { t.classList.remove("show"); undo(); };
+    t.appendChild(b);
+  }
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove("show"), undo ? 4500 : 2000);
+}
+
+/* ---------- order: pinned block on top, the rest by activity ---------- */
+function bump(n) {
+  const top = Math.max(0, ...notes.map((x) => x.sort || 0));
+  n.sort = Math.max(now(), top + 0.001);
+}
+
+function inView(n) {
+  if (view === "bin") return n.deleted;
+  if (n.deleted) return false;
+  return view === "archive" ? n.archived : !n.archived;
+}
+
+function visible() {
+  const q = $("search").value.trim().toLowerCase();
+  return notes.filter(inView)
+    .filter((n) => (n.label + " " + n.title + " " + n.body).toLowerCase().includes(q))
+    .sort((a, b) => (b.pinned - a.pinned) || (a.pinned ? a.pin_order - b.pin_order : b.sort - a.sort));
+}
+
+/* ---------- list ---------- */
+function renderList() {
+  const list = $("list"), shown = visible();
+  list.innerHTML = "";
+  $("listView").className = "view" + (view === "archive" ? " v-archive" : view === "bin" ? " v-bin" : "");
+  $("banner").classList.toggle("hidden", view === "notes");
+  $("emptyBin").classList.toggle("hidden", view !== "bin");
+  $("bannerText").textContent = (view === "archive" ? "Archive" : "Recycle") + " \u00b7 " + notes.filter(inView).length + " notes";
+  $("fab").classList.toggle("hidden", view !== "notes");
+  document.querySelectorAll(".tabs button").forEach((b) => b.classList.toggle("on", b.dataset.view === view));
+
+  if (!shown.length) {
+    const msg = $("search").value ? "No notes match your search."
+      : view === "bin" ? "Recycle is empty."
+      : view === "archive" ? "No archived notes."
+      : "No notes yet.\nTap + New note to start. Long-press a note for more options.";
+    const d = document.createElement("div");
+    d.className = "empty";
+    d.style.whiteSpace = "pre-line";
+    d.textContent = msg;
+    list.appendChild(d);
+  }
+
+  let prev = null;
+  shown.forEach((n) => {
+    const card = document.createElement("button");
+    card.className = "card" + (prev && prev.pinned && !n.pinned ? " after-pins" : "");
+    card.dataset.color = n.color;
+    prev = n;
+    const row = document.createElement("div");
+    row.className = "row";
+    const h = document.createElement("h3");
+    h.textContent = (n.pinned ? "\u{1F4CC} " : "") + nameOf(n);
+    row.appendChild(h);
+    if (n.locked) { const l = document.createElement("span"); l.className = "lock"; l.innerHTML = LOCK_SVG; row.appendChild(l); }
+    const t = document.createElement("time");
+    t.textContent = fmtDate(n.updated);
+    card.append(row, t);
+
+    // long-press opens the menu
+    let lp = null, fired = false;
+    const cancel = () => { if (lp) { clearTimeout(lp.t); lp = null; } };
+    card.addEventListener("pointerdown", (e) => {
+      fired = false;
+      if (e.pointerType === "mouse") return;
+      lp = { x: e.clientX, y: e.clientY, t: setTimeout(() => { fired = true; lp = null; if (navigator.vibrate) navigator.vibrate(12); openSheet(nameOf(n), noteItems(n)); }, 450) };
+    });
+    card.addEventListener("pointermove", (e) => { if (lp && Math.hypot(e.clientX - lp.x, e.clientY - lp.y) > 10) cancel(); });
+    ["pointerup", "pointercancel", "pointerleave"].forEach((ev) => card.addEventListener(ev, cancel));
+    card.addEventListener("contextmenu", (e) => { e.preventDefault(); if (e.pointerType === "mouse" || e.button === 2) openSheet(nameOf(n), noteItems(n)); });
+    card.addEventListener("click", () => { if (fired) { fired = false; return; } openNote(n.id); });
+    list.appendChild(card);
+  });
+}
+
+/* ---------- bottom sheet ---------- */
+function openSheet(title, items) {
+  const p = $("panel");
+  p.innerHTML = "";
+  if (title) { const h = document.createElement("div"); h.className = "sheet-title"; h.textContent = title; p.appendChild(h); }
+  items.forEach(([label, fn, cls, disabled]) => {
+    const b = document.createElement("button");
+    b.textContent = label;
+    if (cls) b.className = cls;
+    b.disabled = !!disabled;
+    b.onclick = () => { closeSheet(); fn(); };
+    p.appendChild(b);
+  });
+  $("sheet").classList.remove("hidden");
+}
+const closeSheet = () => $("sheet").classList.add("hidden");
+$("backdrop").onclick = closeSheet;
+
+function noteItems(n) {
+  if (n.deleted) return [["Restore", () => restore(n)], ["Delete forever", () => forever(n), "danger"]];
+  return [
+    [n.pinned ? "Unpin" : "Pin", () => togglePin(n)],
+    [n.archived ? "Unarchive" : "Archive", () => toggleArchive(n), "", n.locked],
+    [n.locked ? "Unlock" : "Lock", () => toggleLock(n)],
+    ...(n.label ? [["Reset list name", () => resetName(n), "", n.locked]] : []),
+    ["Delete", () => deleteNote(n), "danger", n.locked],
+  ];
+}
+
+/* ---------- note actions ---------- */
+function changed(n, msg, undo) {
+  save(true);
+  renderList();
+  if (editing && currentId === n.id) { if (!inView(n)) goBack(); else refreshEditor(); }
+  if (msg) toast(msg, undo);
+}
+
+function locked(n) { if (n.locked) toast("This note is locked. Unlock it first."); return n.locked; }
+
+function togglePin(n) {
+  if (n.pinned) { n.pinned = false; bump(n); }
+  else { n.pinned = true; n.pin_order = Math.max(0, ...notes.filter((x) => x.pinned).map((x) => x.pin_order || 0)) + 1; }
+  changed(n, n.pinned ? "Pinned" : "Unpinned");
+}
+
+function toggleArchive(n) {
+  if (n.deleted || locked(n)) return;
+  const prev = n.archived;
+  n.archived = !prev;
+  if (prev) bump(n);
+  changed(n, prev ? "Moved back to notes" : "Archived", () => { n.archived = prev; changed(n); });
+}
+
+function toggleLock(n) {
+  if (n.deleted) return;
+  n.locked = !n.locked;
+  changed(n, n.locked ? "Locked" : "Unlocked");
+}
+
+function deleteNote(n) {
+  if (locked(n)) return;
+  n.deleted = true;
+  changed(n, "Moved to Recycle", () => { n.deleted = false; changed(n); });
+}
+
+function restore(n) { n.deleted = false; bump(n); changed(n, "Restored"); }
+
+function forever(n) {
+  if (!confirm("Delete this note forever? This can't be undone.")) return;
+  notes = notes.filter((x) => x !== n);
+  save(true);
+  renderList();
+  if (editing && currentId === n.id) goBack();
+  toast("Deleted forever");
+}
+
+function resetName(n) { if (locked(n)) return; n.label = ""; bump(n); changed(n); }
+
+/* ---------- editor ---------- */
+function autosize() {
+  const p = $("page"), st = p.scrollTop;
+  bodyEl.style.height = "auto";
+  bodyEl.style.height = bodyEl.scrollHeight + "px";
+  p.scrollTop = st;
+}
+
+function refreshEditor() {
+  const n = cur();
+  if (!n) return;
+  const frozen = n.locked || n.deleted;
+  titleEl.readOnly = bodyEl.readOnly = frozen;
+  $("status").textContent = statusText(n);
+  document.querySelectorAll(".swatch").forEach((s) => { s.classList.toggle("on", s.dataset.color === n.color); s.disabled = frozen; });
+  checkSel();
+}
+
+function openNote(id) {
+  const n = notes.find((x) => x.id === id);
+  if (!n) return;
+  currentId = id;
+  editing = true;
+  history.pushState({ edit: 1 }, "");
+  $("listView").classList.add("hidden");
+  $("editView").classList.remove("hidden");
+  titleEl.value = n.title;
+  bodyEl.value = n.body;
+  refreshEditor();
+  autosize();
+  $("page").scrollTop = 0;
+}
+
+function closeEditor() {
+  if (!editing) return;
+  const n = cur();
+  save(true);
+  if (n && freshId === n.id && !n.title && !n.body && !n.label) { // an empty new note is not kept
+    notes = notes.filter((x) => x !== n);
+    save(true);
+  }
+  freshId = null;
+  editing = false;
+  currentId = null;
+  sel = null;
+  $("editView").classList.add("hidden");
+  $("listView").classList.remove("hidden");
+  renderList();
+}
+
+function goBack() { if (history.state && history.state.edit) history.back(); else closeEditor(); }
+window.addEventListener("popstate", () => { if (editing) closeEditor(); });
+
+function onInput() {
+  const n = cur();
+  if (!n || n.locked || n.deleted) return;
+  n.title = titleEl.value;
+  n.body = bodyEl.value;
+  n.updated = now();
+  if (!n.pinned) bump(n);
+  $("status").textContent = "Saving...";
+  autosize();
+  save();
+}
+titleEl.addEventListener("input", onInput);
+bodyEl.addEventListener("input", onInput);
+
+function newNote() {
+  const t = now();
+  const n = norm({ id: uid(), sort: t, updated: t });
+  bump(n);
+  notes.push(n);
+  freshId = n.id;
+  openNote(n.id);
+  titleEl.focus();
+}
+
+// Select words, tap "Use as name": they become the name shown in the list.
+function checkSel() {
+  const el = document.activeElement, n = cur();
+  sel = null;
+  if (editing && n && !n.locked && !n.deleted && (el === titleEl || el === bodyEl)) {
+    sel = el.value.slice(el.selectionStart, el.selectionEnd).replace(/\s+/g, " ").trim() || null;
+  }
+  $("nameBtn").classList.toggle("hidden", !sel);
+}
+document.addEventListener("selectionchange", checkSel);
+[titleEl, bodyEl].forEach((el) => ["select", "keyup", "pointerup", "touchend"].forEach((ev) => el.addEventListener(ev, () => setTimeout(checkSel, 0))));
+$("nameBtn").addEventListener("pointerdown", (e) => {
+  e.preventDefault(); // keep the selection alive
+  const n = cur();
+  if (!n || !sel) return;
+  n.label = sel.slice(0, 80);
+  bump(n);
+  save(true);
+  toast("List name set");
+});
+
+/* ---------- colors ---------- */
+COLORS.forEach((c) => {
+  const s = document.createElement("button");
+  s.className = "swatch";
+  s.dataset.color = c;
+  s.setAttribute("aria-label", c);
+  s.onclick = () => {
+    const n = cur();
+    if (!n || n.locked || n.deleted) return;
+    n.color = c;
+    bump(n);
+    save(true);
+    refreshEditor();
+  };
+  $("colors").appendChild(s);
+});
+
+/* ---------- backup ---------- */
+async function exportBackup() {
+  const text = JSON.stringify(notes, null, 2);
+  const name = "notes-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+  const cap = window.Capacitor;
+  if (cap && cap.isNativePlatform && cap.isNativePlatform()) { // inside the Android app
+    try {
+      const FS = cap.registerPlugin("Filesystem"), Share = cap.registerPlugin("Share");
+      const r = await FS.writeFile({ path: name, data: text, directory: "CACHE", encoding: "utf8" });
+      await Share.share({ title: "Notes backup", url: r.uri, dialogTitle: "Save or send your backup" });
+    } catch (e) {
+      if (/cancel/i.test(String(e && (e.message || e)))) return;
+      try { await navigator.clipboard.writeText(text); toast("Backup copied. Paste it somewhere safe."); }
+      catch (e2) { toast("Could not export the backup."); }
+    }
+    return;
+  }
+  const blob = new Blob([JSON.stringify(notes, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "notes-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  toast("Backup downloaded");
+}
+
+function importNotes(text) {
+  let data;
+  try { data = JSON.parse(text); } catch (e) { toast("That file is not a notes backup."); return; }
+  const arr = Array.isArray(data) ? data : data && Array.isArray(data.notes) ? data.notes : null;
+  if (!arr) { toast("That file is not a notes backup."); return; }
+  let added = 0, updated = 0;
+  arr.filter((x) => x && typeof x === "object" && (x.title || x.body || x.label)).forEach((raw) => {
+    const n = norm(raw), mine = notes.find((x) => x.id === n.id);
+    if (!mine) { notes.push(n); added++; }
+    else if (n.updated > mine.updated) { Object.assign(mine, n); updated++; }
+  });
+  save(true);
+  renderList();
+  toast("Imported " + added + " new, " + updated + " updated");
+}
+
+$("importFile").addEventListener("change", (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => importNotes(String(r.result));
+  r.readAsText(f);
+  e.target.value = "";
+});
+
+/* ---------- wiring ---------- */
+$("fab").onclick = newNote;
+$("backBtn").onclick = goBack;
+$("dotsBtn").onclick = () => { const n = cur(); if (n) openSheet(nameOf(n), noteItems(n)); };
+$("moreBtn").onclick = () => openSheet("Notes", [
+  ["Export backup (.json)", exportBackup],
+  ["Import backup", () => $("importFile").click()],
+  ...(installEvt ? [["Install app", () => { installEvt.prompt(); installEvt = null; }]] : []),
+]);
+$("search").addEventListener("input", renderList);
+document.querySelectorAll(".tabs button").forEach((b) => { b.onclick = () => { view = b.dataset.view; renderList(); }; });
+$("emptyBin").onclick = () => {
+  if (!notes.some((n) => n.deleted && !n.locked)) return;
+  if (!confirm("Delete everything in Recycle forever?")) return;
+  notes = notes.filter((n) => !(n.deleted && !n.locked));
+  save(true);
+  renderList();
+  toast("Recycle emptied");
+};
+
+window.addEventListener("beforeinstallprompt", (e) => { e.preventDefault(); installEvt = e; });
+document.addEventListener("visibilitychange", () => { if (document.hidden && editing) save(true); });
+window.addEventListener("pagehide", () => save(true));
+window.addEventListener("resize", () => { if (editing) autosize(); });
+
+notes = load();
+renderList();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist();
+</script>
+</body>
+</html>

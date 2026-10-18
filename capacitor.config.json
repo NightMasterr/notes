@@ -1,0 +1,7 @@
+{
+  "appId": "com.mynotes.app",
+  "appName": "Notes",
+  "webDir": "www",
+  "backgroundColor": "#e9eeec",
+  "server": { "androidScheme": "https" }
+}
