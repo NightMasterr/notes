@@ -34,7 +34,17 @@ jobs:
 
       - name: App icon
         continue-on-error: true
-        run: npx capacitor-assets generate --android --iconBackgroundColor "#15333a" --iconBackgroundColorDark "#15333a"
+        run: |
+          node -e "require('sharp')({create:{width:1024,height:1024,channels:3,background:'#15333a'}}).png().toFile('assets/icon-background.png')"
+          npx capacitor-assets generate --android
+
+      - name: Safety check for the icon
+        run: |
+          RES=android/app/src/main/res
+          if grep -q ic_launcher_background $RES/mipmap-anydpi-v26/ic_launcher.xml 2>/dev/null && ! ls $RES/mipmap-*/ic_launcher_background* >/dev/null 2>&1; then
+            echo "Icon background missing, using the simple icon instead"
+            rm -rf $RES/mipmap-anydpi-v26
+          fi
 
       - name: Copy the app into Android
         run: npx cap sync android
